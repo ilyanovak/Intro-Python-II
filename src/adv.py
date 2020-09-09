@@ -1,4 +1,6 @@
+import textwrap
 from room import Room
+from player import Player
 
 # Declare all the rooms
 
@@ -39,6 +41,8 @@ room['treasure'].s_to = room['narrow']
 
 # Make a new player object that is currently in the 'outside' room.
 
+player = Player(room['outside'])
+
 # Write a loop that:
 #
 # * Prints the current room name
@@ -49,3 +53,35 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+selection = '0'
+while selection != 'q':
+    print("\nCurrent Location:", player.location.name)
+
+    wrapper = textwrap.TextWrapper(width=50)
+    word_list = wrapper.wrap(text=player.location.description)
+    for element in word_list:
+        print(element)
+
+    selection = input(
+        "\nWhere to? [n] North, [e] East, [s] South, [w] West, [q] Quit:")
+
+    if  (player.location == room['outside'] and selection in ['n']) or \
+        (player.location == room['foyer'] and selection in ['s', 'n', 'e']) or \
+        (player.location == room['overlook'] and selection in ['s']) or \
+        (player.location == room['narrow'] and selection in ['w', 'n']) or \
+        (player.location == room['treasure'] and selection in ['s']):
+
+        if selection == 'n':
+            player.location = player.location.n_to
+        if selection == 'e':
+            player.location = player.location.e_to
+        if selection == 's':
+            player.location = player.location.s_to
+        if selection == 'w':
+            player.location = player.location.w_to
+
+    elif selection != 'q':
+        print('\nERROR: Invalid selection!')
+else:
+    print('\nFarewell!')
